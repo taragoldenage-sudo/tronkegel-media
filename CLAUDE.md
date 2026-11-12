@@ -31,3 +31,11 @@
   Используется предустановленный Chromium (см. `remotion.config.ts`), шрифты — системные заменители.
 - Пример: `REMOTION_OFFLINE_FONTS=1 npm run render -- 33` → `out/33-ukiyo-e_preview.mp4`.
 - Галерея превью (`media/`) не скопирована — смотреть в README исходного репозитория.
+
+## Акварельная анимация p5.brush (бесплатно, MIT, без нейросетей)
+- Шаблон: `tools/p5brush/index.html` (птицы над горами, красное солнце). Параметр `?t=0..1` — момент анимации.
+- Установка: `cd tools/p5brush && npm install` (p5@2 + p5.brush@3 из npm).
+- Рендер кадров: `node tools/p5brush/shot.js $(pwd)/tools/p5brush tools/p5brush/fr/f 48`
+  затем `ffmpeg -framerate 12 -i tools/p5brush/fr/f_%03d.png -c:v libx264 -pix_fmt yuv420p out.mp4`.
+- Скорость в облаке: ~5,5 с на кадр (WebGL программный). Для длинных роликов — меньше кадров + интерполяция.
+- Стабильный фон: перед каждым элементом вызывать `randomSeed(N)` с фиксированным N.
