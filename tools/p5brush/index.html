@@ -1,0 +1,20 @@
+<!doctype html><html><head><meta charset="utf-8">
+<script src="node_modules/p5/lib/p5.min.js"></script>
+<script src="node_modules/p5.brush/dist/p5.brush.js"></script>
+<style>body{margin:0;background:#000}</style></head><body><script>
+const W=720,H=900; const P=new URLSearchParams(location.search); const T=+(P.get('t')||0.5);
+function mount(yBase, amp, col, op, seed){ randomSeed(seed); const pts=[[-W/2,H/2]];
+  for(let x=-W/2;x<=W/2;x+=40) pts.push([x, yBase - amp*noise(x*0.004+seed) - 30*sin(x*0.02+seed)]);
+  pts.push([W/2,H/2]); brush.noStroke(); brush.fill(col,op); brush.fillBleed(0.15,"out"); brush.polygon(pts); }
+function bird(x,y,s,flap){ brush.set("charcoal","#1b2330",1.2); brush.noFill(); brush.noStroke();
+  brush.fill("#1b2330",150); brush.fillBleed(0.05,"out");
+  const w=flap*s; brush.polygon([[x-1.2*s,y-w],[x-0.3*s,y-0.1*s],[x,y+0.15*s],[x+0.3*s,y-0.1*s],[x+1.2*s,y-w],[x+0.3*s,y+0.25*s],[x,y+0.35*s],[x-0.3*s,y+0.25*s]]); }
+function setup(){ createCanvas(W,H,WEBGL); pixelDensity(1); noiseSeed(7); randomSeed(7); noLoop(); }
+function draw(){ background("#efe3cc"); brush.scaleBrushes(1.5);
+  brush.noStroke(); brush.fill("#e9b9a0",60); brush.rect(-W/2,-H/2,W,H*0.55);
+  randomSeed(3); brush.fill("#8e1b2a",180); brush.fillBleed(0.1,"out"); brush.circle(130,-60,70);
+  mount(40,160,"#9fb3c8",110,11); mount(140,140,"#6f87a3",130,22); mount(250,120,"#3f5876",150,33);
+  randomSeed(5); const bx=-W/2+60+T*(W-120), by=-220+40*sin(T*6.28);
+  bird(bx,by,46,0.6*cos(T*6.28*4)); bird(bx-110,by+60,30,0.6*cos(T*6.28*4+1)); bird(bx-200,by+20,24,0.6*cos(T*6.28*4+2));
+  window.DONE=true; }
+</script></body></html>
