@@ -23,3 +23,11 @@
   `python3 -m venv /home/user/.venv-audio && /home/user/.venv-audio/bin/pip install faster-whisper librosa`
 - Только локальная обработка, без платных API.
 - faster-whisper скачивает модель с huggingface.co. Если хост закрыт сетью — сообщить прямо, расшифровку не выдумывать.
+
+## Скилл animation-styles (анимация кодом, Remotion, без платных моделей)
+- Лежит в `.claude/skills/animation-styles` (источник: github.com/deenukhan/animation-styles, MIT).
+- Первый запуск в сессии: `cd .claude/skills/animation-styles && npm install`.
+- В облачной сессии рендерить с `REMOTION_OFFLINE_FONTS=1`: Google Fonts и загрузка Chrome закрыты сетью.
+  Используется предустановленный Chromium (см. `remotion.config.ts`), шрифты — системные заменители.
+- Пример: `REMOTION_OFFLINE_FONTS=1 npm run render -- 33` → `out/33-ukiyo-e_preview.mp4`.
+- Галерея превью (`media/`) не скопирована — смотреть в README исходного репозитория.

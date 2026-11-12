@@ -1,0 +1,26 @@
+{
+  "name": "animation-styles",
+  "version": "1.0.0",
+  "private": true,
+  "description": "39 animation styles drawn in code with Remotion. One 5-second story (a kettle pours chai into a clay cup) in every style, ready to retell with your own story.",
+  "license": "MIT",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "list": "node scripts/render.mjs --list",
+    "render": "node scripts/render.mjs",
+    "new": "node scripts/new-project.mjs",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.534",
+    "@remotion/google-fonts": "4.0.534",
+    "@remotion/paths": "4.0.534",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.534"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.8",
+    "typescript": "5.8.3"
+  }
+}
