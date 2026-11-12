@@ -1,5 +1,8 @@
 # Инструкция проекта tronkegel-media
 
+## Начало каждой сессии
+`bash tools/setup.sh` — ставит/проверяет весь набор (контейнер временный, установки не сохраняются).
+
 ## Звук: анализ перед монтажом (обязательно)
 
 Перед любым монтажом ролика сначала анализировать звук:
@@ -39,3 +42,14 @@
   затем `ffmpeg -framerate 12 -i tools/p5brush/fr/f_%03d.png -c:v libx264 -pix_fmt yuv420p out.mp4`.
 - Скорость в облаке: ~5,5 с на кадр (WebGL программный). Для длинных роликов — меньше кадров + интерполяция.
 - Стабильный фон: перед каждым элементом вызывать `randomSeed(N)` с фиксированным N.
+
+## Мультик с озвучкой: конвейер (всё локально и бесплатно)
+1. **Анимация:** p5.brush (`tools/p5brush/`) или Remotion-скилл animation-styles.
+2. **Озвучка:** `python3 tools/cartoon/voiceover.py script.txt out/ --voice anna`
+   - одна фраза на строку; `[aleksandr-hq] текст` — другой голос для фразы (диалоги);
+   - `--rate 0.9` медленнее, `--pause 0.4` пауза между фразами;
+   - женские: anna elena irina tatiana victoria arina; мужские: aleksandr-hq artemiy mikhail pavel yuriy vitaliy evgeniy-rus.
+   - на выходе `voice.wav` и `subs.srt` с точными таймингами (Whisper для субтитров не нужен).
+3. **Сборка:** `tools/cartoon/assemble.sh anim.mp4 out/voice.wav out/subs.srt result.mp4 [music.mp3]`
+   — анимация зацикливается до длины голоса, музыка приглушается под голос, громкость −16 LUFS, пик ≤ −1,5 dB.
+- RHVoice — синтез среднего качества (не нейросеть). Нейроголоса Piper/Silero требуют доступа к huggingface.co / models.silero.ai — сейчас закрыто сетью.
