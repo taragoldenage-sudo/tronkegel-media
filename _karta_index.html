@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow">
+<title>Оракул Татьяны Танго</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Philosopher:wght@400;700&display=swap">
+<style>*{box-sizing:border-box}img{max-width:100%}[hidden]{display:none!important}
+/* Layout: one column, a fan of face-down cards becomes one large card that flips between picture and message */
+:root{
+  --night:#17101f; --plum:#2a1a38; --gold:#e3b45c; --gold-soft:#b98e47; --ink:#f3e9d8; --mist:#b9a8c4;
+  --display:"Cormorant Garamond", "Times New Roman", Georgia, serif;
+  --body:"Philosopher", "Trebuchet MS", system-ui, sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:radial-gradient(120% 70% at 50% 0%, var(--plum), var(--night) 70%);background-color:var(--night);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 32px;overflow-x:hidden}
+#sky{position:fixed;inset:0;z-index:-1;pointer-events:none}
+main{max-width:520px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center}
+.eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-soft)}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(34px,9vw,48px);line-height:1.05;margin:0;color:var(--gold);text-wrap:balance}
+h1 i{font-weight:500;color:var(--ink)}
+.lead{margin:0;color:var(--mist);max-width:34ch}
+.date{font-family:var(--display);font-style:italic;font-size:18px;color:var(--ink)}
+
+/* the fan */
+.fan{position:relative;width:100%;height:clamp(230px,62vw,300px);margin-top:6px}
+.fan button{position:absolute;left:50%;bottom:0;width:clamp(110px,30vw,150px);aspect-ratio:2/3;max-width:100%;padding:0;border:0;border-radius:10px;background:var(--night) url(back.jpg) center/cover;
+  box-shadow:0 10px 24px rgba(0,0,0,.55),0 0 0 1px rgba(227,180,92,.35);cursor:pointer;transform-origin:50% 120%;
+  transform:translateX(-50%) rotate(var(--r)) translateY(var(--y,0));transition:transform .35s ease, box-shadow .35s}
+.fan button::after{content:"☾";position:absolute;inset:0;display:grid;place-items:center;font-size:30px;color:var(--gold);text-shadow:0 0 14px rgba(227,180,92,.8)}
+.fan button:hover,.fan button:focus-visible{--y:-18px;box-shadow:0 16px 30px rgba(0,0,0,.6),0 0 0 2px var(--gold),0 0 26px rgba(227,180,92,.45);outline:none}
+.fan.leaving button{transition:transform .5s ease,opacity .4s;opacity:0}
+.fan.leaving button.chosen{opacity:1;--y:-40px}
+.hint{font-size:14px;color:var(--mist);margin:0}
+
+/* the drawn card */
+.stage{width:min(78vw,340px);max-width:100%;perspective:1200px}
+.card{position:relative;width:100%;aspect-ratio:2/3;max-width:100%;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.3,.7,.2,1);cursor:pointer;border:0;padding:0;background:none;display:block}
+.card.f{transform:rotateY(180deg)} .card.b{transform:rotateY(360deg)}
+.face{position:absolute;inset:0;border-radius:14px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--night);
+  box-shadow:0 18px 40px rgba(0,0,0,.6),0 0 0 1px rgba(227,180,92,.45),0 0 40px rgba(227,180,92,.18)}
+.face img,.face video{width:100%;height:100%;object-fit:cover;display:block}
+.face.shirt{background:url(back.jpg) center/cover}
+.face.shirt::after{content:"☾";position:absolute;inset:0;display:grid;place-items:center;font-size:44px;color:var(--gold);text-shadow:0 0 18px rgba(227,180,92,.9)}
+.face.pic{transform:rotateY(180deg)}
+.card.b .face.pic{visibility:hidden} .card:not(.b) .face.msg{visibility:hidden}
+.face.msg{transform:rotateY(360deg)}
+.title{font-family:var(--display);font-size:clamp(28px,7vw,36px);font-weight:600;margin:0;color:var(--gold)}
+.title small{display:block;font-family:var(--body);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-soft);font-weight:400}
+.row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.btn{font:inherit;font-size:15px;border-radius:999px;padding:11px 20px;cursor:pointer;border:1px solid var(--gold);background:transparent;color:var(--gold)}
+.btn.main{background:var(--gold);color:var(--night);font-weight:700}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.note{margin:0;padding:12px 16px;border-radius:12px;background:rgba(227,180,92,.1);border:1px solid rgba(227,180,92,.3);font-size:14px;max-width:36ch}
+.direct{display:flex;flex-direction:column;gap:6px;padding:16px 18px;border-top:1px solid rgba(227,180,92,.3);max-width:38ch}
+.direct b{font-family:var(--display);font-size:22px;color:var(--gold);font-weight:600}
+.direct p{margin:0;color:var(--mist);font-size:14px}
+.direct q{color:var(--ink)}
+.meaning{display:flex;flex-direction:column;gap:8px;max-width:38ch;text-align:left;padding:16px 18px;border-radius:14px;background:rgba(227,180,92,.08);border:1px solid rgba(227,180,92,.3)}
+.meaning b{font-family:var(--display);font-size:22px;color:var(--gold);font-weight:600;text-align:center}
+.meaning p{margin:0;font-size:15px;line-height:1.6;color:var(--ink)}
+.say{font-family:var(--display);font-style:italic;font-size:20px;color:var(--ink)!important}
+footer{font-size:12px;color:var(--mist);opacity:.75}
+@media (prefers-reduced-motion:reduce){.card,.fan button{transition:none}}
+</style>
+
+</head><body>
+<canvas id="sky" aria-hidden="true"></canvas>
+<main>
+  <div class="eyebrow">Авторская колода · Оракул Татьяны Танго</div>
+  <h1>Карта <i>дня</i></h1>
+  <p class="lead">Карту для вас откроет гадалка Рада</p>
+  <div class="date" id="today"></div>
+
+  <section id="pick">
+    <p class="lead">Сделайте вдох, подумайте о том, что вас волнует, и выберите одну карту.</p>
+    <div class="fan" id="fan" role="group" aria-label="Выберите карту"></div>
+    <p class="hint">Одна карта в день — только для вас</p>
+  </section>
+
+  <section id="result" hidden style="display:flex;flex-direction:column;align-items:center;gap:16px">
+    <h2 class="title" id="ctitle"><small>Ваша карта</small><span></span></h2>
+    <div class="stage">
+      <button class="card" id="card" aria-label="Перевернуть карту">
+        <div class="face shirt"></div>
+        <div class="face pic" id="pic"></div>
+        <div class="face msg" id="msg"></div>
+      </button>
+    </div>
+    <div class="row">
+      <button class="btn main" id="flip">Прочитать послание</button>
+      <button class="btn" id="snd" aria-pressed="false">🔇 Звук</button>
+    </div>
+    <p class="note" id="again" hidden>Ваша карта на сегодня уже открыта. Новая карта ждёт вас завтра 🌙</p>
+    <div class="direct">
+      <b>Хотите подробное значение вашей карты?</b>
+      <p>Нажмите кнопку и напишите Раде в Telegram одно слово:</p>
+      <p class="say">«КАРТА»</p>
+      <a class="btn main" id="ig" href="https://t.me/rada_primety_bot" target="_blank" rel="noopener">Написать Раде в Telegram</a>
+    </div>
+  </section>
+  <footer>© Татьяна Танго. «Оракул Татьяны Танго» — авторская колода: изображения и тексты карт защищены авторским правом, копирование без разрешения автора запрещено.<br>Гадалка Рада — проводник колоды.</footer>
+</main>
+
+<script>
+const CARDS=[{"n": 1, "t": "Разлука", "f": {"v": true, "s": "m/c01f"}, "b": {"v": true, "s": "m/c01b"}, "a": "m/s01.mp3", "m": "Разлука показывает момент, когда что-то важное уже ушло из жизни, и вернуть это нельзя. Вместе с этим освобождается пространство, где раньше стояло лишнее. Пустота здесь — не враг, а место, в которое постепенно может войти новое."}, {"n": 2, "t": "Тишина", "f": {"v": true, "s": "m/c02f"}, "b": {"v": true, "s": "m/c02b"}, "a": "m/s02.mp3", "m": "Тишина приходит, когда любые разговоры и объяснения только ранят. В этом состоянии нет громких ответов, но есть честное ощущение себя. Именно в тишине становится слышно, чего ты больше не хочешь и к чему готов двигаться дальше."}, {"n": 3, "t": "Зеркало", "f": {"v": true, "s": "m/c03f"}, "b": {"v": true, "s": "m/c03b"}, "m": "Зеркало показывает, как сильно ты привык смотреть на себя чужими глазами. Оценка, одобрение, лайки и мнения долгое время могли быть главным ориентиром. Эта карта возвращает к вопросу: кто ты без зрителей, когда роль можно не играть.", "a": "m/s03.mp3"}, {"n": 4, "t": "Мост", "f": {"v": true, "s": "m/c04f"}, "b": {"v": true, "s": "m/c04b"}, "m": "Мост обозначает переходный этап, когда старое уже не работает, а нового ещё нет. Можно бесконечно пытаться чинить то, что трещит по швам, или признать, что путь заканчивается. Эта карта поддерживает решение сделать шаг в неизвестность, где создаётся следующий этап твоей жизни.", "a": "m/s04.mp3"}, {"n": 5, "t": "Пепел бабочки", "f": {"v": true, "s": "m/c05f"}, "b": {"v": true, "s": "m/c05b"}, "m": "Пепел бабочки говорит о сильной трансформации через боль и потерю. Что-то в прежнем образе жизни сгорело, и назад к старой версии себя уже не вернуться. Эта карта напоминает: в пепле уже лежит материал для нового “я”, которое рождается не из страха, а из опыта.", "a": "m/s05.mp3"}, {"n": 6, "t": "Клетка", "f": {"v": true, "s": "m/c06f"}, "b": {"v": true, "s": "m/c06b"}, "m": "Клетка уже открыта, но тебя всё ещё держат привычки бояться, угождать, терпеть. Кажется, что выхода нет, хотя дверь давно приоткрыта. Свобода начинается там, где признаётся факт открытой двери и разрешение сделать первый шаг наружу.", "a": "m/s06.mp3"}, {"n": 7, "t": "Сад", "f": {"v": true, "s": "m/c07f"}, "b": {"v": true, "s": "m/c07b"}, "m": "Сейчас внутри может ощущаться выжженное поле без сил и вдохновения. Но под этой пустотой земля остаётся живой и готовой принять новое. Всё пережитое стало удобрением, на котором можно вырастить другие смыслы и желания.", "a": "m/s07.mp3"}, {"n": 8, "t": "Волна", "f": {"v": true, "s": "m/c08f"}, "b": {"v": true, "s": "m/c08b"}, "m": "Волна приходит после сильного эмоционального шторма. Чувства ещё рядом, но уже не накрывают так, как раньше, и появляется первый свободный вдох. Это время не для новой битвы, а для отдыха, восстановления и мягкого возвращения к внутреннему равновесию.", "a": "m/s08.mp3"}, {"n": 9, "t": "Ключ", "f": {"v": true, "s": "m/c09f"}, "b": {"v": true, "s": "m/c09b"}, "a": "m/s09.mp3", "m": "Ключ говорит о важности выбирать, к каким дверям вообще стоит подходить. Не каждую ситуацию, человека или проект нужно открывать своей энергией. Эта карта напоминает: когда перестаёшь ломиться в чужие замки, появляется шанс увидеть и свою настоящую дверь."}, {"n": 10, "t": "Упорство", "f": {"v": true, "s": "m/c10f"}, "b": {"v": true, "s": "m/c10b"}, "a": "m/s10.mp3", "m": "Упорство показывает состояние, когда уже много раз приходилось падать и обжигаться, но движение всё равно продолжается. Иногда всё держится на одной тонкой надежде “а вдруг получится”. Пока сохраняется связь со своими ценностями и внутренней нитью, поражение не наступает — путь всё ещё пишется."}, {"n": 11, "t": "Огонь", "f": {"v": true, "s": "m/c11f"}, "b": {"v": true, "s": "m/c11b"}, "m": "Пламя говорит о внутреннем огне, который уже разгорелся. Это не про разрушение ради разрушения, а про очищение всего, что давно отжило. Карта показывает момент, когда энергия возвращается в тело и жизнь, и старые ограничения начинают сгорать.", "a": "m/s11.mp3"}, {"n": 12, "t": "Река", "f": {"v": true, "s": "m/c12f"}, "b": {"v": true, "s": "m/c12b"}, "a": "m/s12.mp3", "m": "Река напоминает, что движение жизни нельзя остановить. События, чувства и люди приходят и уходят, как вода, огибая препятствия. Эта карта поддерживает решение не бороться с течением любой ценой, а искать своё направление внутри потока."}, {"n": 13, "t": "Маска", "f": {"v": true, "s": "m/c13f"}, "b": {"v": true, "s": "m/c13b"}, "m": "Маска показывает привычку держать лицо и говорить “всё нормально”, даже когда внутри больно и пусто. Такая защита помогает выжить, но со временем отдаляет от себя и других. Эта карта предлагает хотя бы внутри снять маску и признать свои настоящие чувства, чтобы в жизнь вернулось что-то живое.", "a": "m/s13.mp3"}, {"n": 14, "t": "Песок", "f": {"v": true, "s": "m/c14f"}, "b": {"v": true, "s": "m/c14b"}, "a": "m/s14.mp3", "m": "Песок связан с воспоминаниями, к которым снова и снова возвращается сознание. Мысли “а если бы тогда всё сложилось иначе” только застревают и забирают силы. Карта подчёркивает ценность не несбывшегося, а тех уроков, выводов и границ, которые можно забрать с собой из прошлого."}, {"n": 15, "t": "Маяк", "f": {"v": true, "s": "m/c15f"}, "b": {"v": true, "s": "m/c15b"}, "a": "m/s15.mp3", "m": "Маяк появляется, когда особенно сильно хочется, чтобы кто-то пришёл и спас. В такие моменты собственный свет кажется слабым или незаметным. Эта карта напоминает: именно внутренний свет становится опорой в шторме и ведёт к берегу, даже если вокруг темно."}, {"n": 16, "t": "Камень", "f": {"v": true, "s": "m/c16f"}, "b": {"v": true, "s": "m/c16b"}, "a": "m/s16.mp3", "m": "Камень символизирует устойчивость и неподвижность посреди перемен. Вокруг могут меняться люди и обстоятельства, но внутри остаётся твёрдое ядро. Эта карта поддерживает решение не метаться, а занять свою позицию и отстоять её."}, {"n": 17, "t": "Круг", "f": {"v": true, "s": "m/c17f"}, "b": {"v": true, "s": "m/c17b"}, "m": "Круг указывает на ощущение незавершённости и внутреннего раскола. Внешняя форма может казаться повреждённой или “неидеальной”. Эта карта напоминает: целостность рождается не из безупречности формы, а из принятия себя таким, какой есть внутри.", "a": "m/s17.mp3"}, {"n": 18, "t": "Письмо", "f": {"v": true, "s": "m/c18f"}, "b": {"v": true, "s": "m/c18b"}, "a": "m/s18.mp3", "m": "Письмо связано с тем, что осталось несказанным. Молчание здесь звучит громче любых слов и всё равно передаёт присутствие. Эта карта предлагает не искать идеальный текст, а признать важность самого факта внутреннего “я есть”."}, {"n": 19, "t": "Лестница", "f": {"v": true, "s": "m/c19f"}, "b": {"v": true, "s": "m/c19b"}, "m": "Лестница показывает путь, который ведёт вверх, даже если конца ступеней не видно. На каком-то этапе привычная опора исчезает, и дальше идти страшно. Карта говорит о том, что за границей привычного начинается не пустота, а новое пространство, где падение может оказаться началом полёта.", "a": "m/s19.mp3"}, {"n": 20, "t": "Свет", "f": {"v": true, "s": "m/c20f"}, "b": {"v": true, "s": "m/c20b"}, "a": "m/s20.mp3", "m": "Свет приходит в моменты, когда кажется, что ты треснул и сломался. Трещины больно, но именно через них начинает пробиваться внутреннее сияние. Эта карта напоминает: не идеальность и целостная оболочка делают тебя живым, а тот свет, который выходит наружу через опыт и раны."}, {"n": 21, "t": "Тень", "f": {"v": true, "s": "m/c21f"}, "b": {"v": true, "s": "m/c21b"}, "a": "m/s21.mp3", "m": "Тень поднимает те части тебя, которые раньше приходилось прятать: злость, ревность, усталость быть удобным и правильным. Эти части пугают, пока на них смотришь издалека и делаешь вид, что их нет. Когда перестаёшь от них убегать, они перестают быть монстром и превращаются в силу и защиту."}, {"n": 22, "t": "Дверь", "f": {"v": true, "s": "m/c22f"}, "b": {"v": true, "s": "m/c22b"}, "a": "m/s22.mp3", "m": "Дверь появляется в момент, когда старое уже тесно, а новое ещё не обещает гарантий. Хочется знаков и страховки от ошибок, но её не дают. Эта карта про выбор: остаться в знакомом или шагнуть в неизвестность, чтобы наконец жить по своему сценарию."}, {"n": 23, "t": "Полёт", "f": {"v": true, "s": "m/c23f"}, "b": {"v": true, "s": "m/c23b"}, "a": "m/s23.mp3", "m": "Полёт показывает состояние выхода за старые рамки и ограничения. Когда клетка позади, становится видно, на что на самом деле способны твои крылья. Эта карта про момент, когда страх всё ещё рядом, но свобода уже важнее привычной клетки."}, {"n": 24, "t": "Звезда", "f": {"v": true, "s": "m/c24f"}, "b": {"v": true, "s": "m/c24b"}, "a": "m/s24.mp3", "m": "Звезда связана с внутренней надеждой, которая не гаснет даже в самую тёмную ночь. Иногда её свет почти не видно, но он всё равно есть. Карта напоминает: даже если сейчас мрачно, где-то внутри уже горит точка опоры и ориентир вперёд."}, {"n": 25, "t": "Песня", "f": {"v": true, "s": "m/c25f"}, "b": {"v": true, "s": "m/c25b"}, "m": "Песня говорит о внутреннем звучании, которое не всегда можно выразить словами. Это про уникальный ритм, чувства и интонации твоей души. Карта приглашает прислушаться к себе и жить в более честном, собственном темпе, а не под чужую мелодию.", "a": "m/s25.mp3"}, {"n": 26, "t": "Корни", "f": {"v": true, "s": "m/c26f"}, "b": {"v": true, "s": "m/c26b"}, "m": "Корни говорят о том, что привычная опора ушла или перевернулась. Роли, связи и конструкции, на которые раньше можно было опереться, больше не работают так, как раньше. Карта показывает: настоящая опора ищется внутри, и именно она позволяет не провалиться в хаос, а адаптироваться и идти дальше.", "a": "m/s26.mp3"}, {"n": 27, "t": "Ветер", "f": {"v": true, "s": "m/c27f"}, "b": {"v": true, "s": "m/c27b"}, "m": "Ветер связан с переменами, которые приходят и уходят, не спрашивая. Он про то, что не всё в жизни можно удержать и зафиксировать. Карта напоминает: иногда легче позволить ветру пройти сквозь твоё пространство, чем пытаться остановить каждое дуновение.", "a": "m/s27.mp3"}, {"n": 28, "t": "Сон", "f": {"v": true, "s": "m/c28f"}, "b": {"v": true, "s": "m/c28b"}, "a": "m/s28.mp3", "m": "Сон показывает пространство, где логика отходит на второй план. В снах проявляются скрытые желания, страхи и подсказки, которые сложно увидеть в суете дня. Эта карта говорит о важности паузы, отдыха и честного контакта с внутренним миром."}, {"n": 29, "t": "Кровь", "f": {"v": true, "s": "m/c29f"}, "b": {"v": true, "s": "m/c29b"}, "m": "Кровь символизирует сам факт жизни, которая течёт внутри тебя, независимо от внешних обстоятельств. Это напоминание о том, что ты живой, чувствующий, настоящий. Карта подчеркивает ценность твоей жизненной силы и необходимость беречь её.", "a": "m/s29.mp3"}, {"n": 30, "t": "Дыхание", "f": {"v": true, "s": "m/c30f"}, "b": {"v": true, "s": "m/c30b"}, "m": "Дыхание — это самое простое и одновременно самое важное, что поддерживает жизнь. В моменты стресса и хаоса именно про него чаще всего забывают. Карта предлагает вернуться к базовому: сделать вдох, выдох и хотя бы на секунду отпустить всё лишнее.", "a": "m/s30.mp3"}, {"n": 31, "t": "Танец", "f": {"v": true, "s": "m/c31f"}, "b": {"v": true, "s": "m/c31b"}, "m": "Танец говорит о том, что жизнь — это не только планы и шаги по списку. В ней есть спонтанность, движение, импровизация. Эта карта напоминает: иногда важно не считать шаги, а позволить себе двигаться в ритме момента.", "a": "m/s31.mp3"}, {"n": 32, "t": "Пустота", "f": {"v": true, "s": "m/c32f"}, "b": {"v": true, "s": "m/c32b"}, "a": "m/s32.mp3", "m": "Пустота может пугать тем, что в ней как будто ничего нет. Но именно в этом “ничего” рождается пространство для нового выбора и новых смыслов. Карта показывает: вместо того чтобы срочно чем-то заполнить пустоту, можно сначала просто побыть в ней и почувствовать себя."}, {"n": 33, "t": "Дождь", "f": {"v": true, "s": "m/c33f"}, "b": {"v": true, "s": "m/c33b"}, "m": "Дождь связан с очищением через слёзы, переживания и мягкое смывание старого. То, что раньше казалось грязью и тяжестью, постепенно уходит вместе с каплями. Эта карта поддерживает идею, что очищение может быть естественным и не всегда приятным, но в итоге легче дышать.", "a": "m/s33.mp3"}, {"n": 34, "t": "Глаз", "f": {"v": true, "s": "m/c34f"}, "b": {"v": true, "s": "m/c34b"}, "a": "m/s34.mp3", "m": "Глаз говорит о внимании и осознанном взгляде на себя и мир. Можно смотреть на ситуацию автоматически, а можно действительно видеть, что происходит внутри и снаружи. Эта карта напоминает: важно не только быть увиденным, но и самому не отворачиваться от правды."}, {"n": 35, "t": "Нить", "f": {"v": true, "s": "m/c35f"}, "b": {"v": true, "s": "m/c35b"}, "a": "m/s35.mp3", "m": "Нить символизирует ту тонкую линию, которая ведёт тебя через разные этапы жизни. Иногда кажется, что она вот-вот оборвётся, но связь всё равно остаётся. Карта говорит о важности держаться за своё внутреннее направление, даже когда вокруг темно или непонятно."}, {"n": 36, "t": "Я", "f": {"v": true, "s": "m/c36f"}, "b": {"v": true, "s": "m/c36b"}, "m": "Карта “Я” возвращает внимание к тому, кто стоит в центре всех этих историй. Роли, маски и ожидания других важны, но не могут заменить настоящего внутреннего “я”. Эта карта напоминает: в любой ситуации важно не потерять себя и своё ощущение того, кто ты есть на самом деле.", "a": "m/s36.mp3"}];
+const KEY='rada-card-of-day';
+const IG=''; // ник Рады в Instagram, например 'gadalka_rada'
+const d=new Date();
+const today=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+document.getElementById('today').textContent=d.toLocaleDateString('ru-RU',{day:'numeric',month:'long',weekday:'long'});
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'null');return s&&s.day===today?s:null}catch(e){return null}}
+function save(i){try{localStorage.setItem(KEY,JSON.stringify({day:today,i}))}catch(e){}}
+
+const fan=document.getElementById('fan');
+const N=7;
+for(let k=0;k<N;k++){
+  const b=document.createElement('button');
+  b.style.setProperty('--r',((k-(N-1)/2)*11)+'deg');
+  b.setAttribute('aria-label','Карта '+(k+1));
+  b.onclick=()=>choose(b);
+  fan.appendChild(b);
+}
+let sound=false, side='shirt', media={}, track=null, voice=null, cur=null;
+function mkTrack(c){if(!c.a)return null;const a=new Audio(c.a);a.loop=true;a.preload='auto';return a}
+function el(m,isFront){
+  if(m.v){const v=document.createElement('video');v.src=m.s+'.mp4';v.poster=m.s+'.jpg';v.loop=true;v.playsInline=true;v.setAttribute('playsinline','');v.muted=!sound;v.preload=isFront?'auto':'metadata';return v}
+  const i=document.createElement('img');i.src=m.s+'.jpg';i.alt='';return i;
+}
+function play(v){if(!v||v.tagName!=='VIDEO')return;v.muted=(track||(voice&&side==='b'))?true:!sound;const p=v.play();if(p)p.catch(()=>{v.muted=true;v.play().catch(()=>{})})}
+function pause(v){if(v&&v.tagName==='VIDEO')v.pause()}
+function show(i,instant){
+  const c=CARDS[i];
+  document.querySelector('#ctitle span').textContent=c.t;
+  const pic=document.getElementById('pic'),msg=document.getElementById('msg');
+  media.f=el(c.f,true);media.b=el(c.b,false);
+  pic.replaceChildren(media.f);msg.replaceChildren(media.b);
+  document.getElementById('pick').hidden=true;
+  const r=document.getElementById('result');r.hidden=false;
+  cur=c;
+  if(!track)track=mkTrack(c);
+  if(c.vo&&!voice){voice=new Audio(c.vo);voice.preload='auto';voice.onended=()=>{if(track)track.volume=1}}
+  document.getElementById('snd').hidden=!(c.f.v||c.b.v||c.a);
+  const card=document.getElementById('card');
+  if(instant){card.style.transition='none';setSide('f');requestAnimationFrame(()=>card.style.transition='')}
+  else setTimeout(()=>setSide('f'),250);
+}
+function setSide(s){
+  side=s;const card=document.getElementById('card');
+  card.classList.toggle('f',s==='f');card.classList.toggle('b',s==='b');
+  document.getElementById('flip').textContent=s==='b'?'Посмотреть карту':'Прочитать послание';
+  if(s==='f'){pause(media.b);play(media.f)}else{pause(media.f);play(media.b)}
+  if(voice){if(s==='b'&&sound){if(track)track.volume=.25;voice.currentTime=0;voice.play().catch(()=>{if(track)track.volume=1})}else{voice.pause();if(track)track.volume=1}}
+}
+function choose(b){
+  sound=true;updSnd();
+  b.classList.add('chosen');fan.classList.add('leaving');
+  const i=Math.floor(Math.random()*CARDS.length);save(i);
+  track=mkTrack(CARDS[i]);if(track)track.play().catch(()=>{});
+  setTimeout(()=>show(i,false),450);
+}
+function toggle(){setSide(side==='b'?'f':'b')}
+document.getElementById('card').onclick=toggle;
+document.getElementById('card').oncontextmenu=e=>e.preventDefault();
+document.getElementById('flip').onclick=toggle;
+function updSnd(){const s=document.getElementById('snd');s.textContent=sound?'🔊 Звук':'🔇 Звук';s.setAttribute('aria-pressed',sound)}
+document.getElementById('snd').onclick=()=>{sound=!sound;updSnd();if(voice&&!sound){voice.pause()}if(track){sound?track.play().catch(()=>{}):track.pause();return}const v=side==='b'?media.b:media.f;if(v&&v.tagName==='VIDEO'){v.muted=!sound;if(sound)v.play().catch(()=>{})}};
+
+const qn=parseInt(new URLSearchParams(location.search).get('n'),10);
+const qi=qn?CARDS.findIndex(c=>c.n===qn):-1;
+const saved=load();
+if(qi>=0){save(qi);show(qi,true)}
+else if(saved&&CARDS[saved.i]){document.getElementById('again').hidden=false;show(saved.i,true)}
+
+/* quiet starfield */
+(function(){const c=document.getElementById('sky'),x=c.getContext('2d');let s=[];
+function rs(){c.width=innerWidth*devicePixelRatio;c.height=innerHeight*devicePixelRatio;s=Array.from({length:90},()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.4*devicePixelRatio+.3,p:Math.random()*6}))}
+rs();addEventListener('resize',rs);
+const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function f(t){x.clearRect(0,0,c.width,c.height);for(const a of s){x.globalAlpha=.25+.55*Math.abs(Math.sin(a.p+t/1800));x.fillStyle='#f3d79a';x.beginPath();x.arc(a.x,a.y,a.r,0,7);x.fill()}if(!still)requestAnimationFrame(f)}
+requestAnimationFrame(f)})();
+</script>
+
+</body></html>
